@@ -14,8 +14,8 @@ shinyServer(
       c(input$lat, input$long)
     }, ignoreNULL = FALSE)
     
-    lat_from_client <- renderPrint({input$lat})
-    lng_from_client <- renderPrint({input$long})
+    long <- renderPrint({ input$long })
+    lat <- renderPrint({ input$lat})
     
     output$mymap <- renderLeaflet({
       leaflet() %>%
