@@ -12,6 +12,8 @@ shinyUI(
   fluidPage(
     leafletOutput("mymap"),
     p(),
-    actionButton("recalc", "New points")
+    textInput("lat", "latitude", value = "-37.23"),
+    textInput("long", "longitude", value = "175.5"),
+    actionButton("submitLocation", "Submit location")
   )
 )
