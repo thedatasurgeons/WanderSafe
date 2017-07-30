@@ -31,9 +31,9 @@ shinyUI(
                 '),
     titlePanel("WanderSafe - by The Data Surgeons"),
     leafletOutput("mymap"),
-    p(),
-    textInput("lat", "latitude", value = "-37.23"),
-    textInput("long", "longitude", value = "175.5"),
-    actionButton("submitLocation", "Submit location")
+    actionButton('dosomething', 'Click to refresh'),
+    textInput('lat', 'Latitude'),
+    textInput('long', 'Longitude'),
+    p()
   )
 )

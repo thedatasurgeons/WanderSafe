@@ -6,16 +6,41 @@
 #
 
 library(shiny)
+library(NISTunits)
+library(geojsonio)
+library(rgdal)
+source("geo_functions.R")
 
 shinyServer(
   function(input, output, session) {
-    
-    location <- eventReactive(input$submitLocation, {
-      c(input$lat, input$long)
+    points <- eventReactive(input$lat, {
+      getBoundingBox(as.numeric(input$lat), as.numeric(input$long), 100)
     }, ignoreNULL = FALSE)
     
-    long <- renderPrint({ input$long })
-    lat <- renderPrint({ input$lat})
+    meshBlockIDList <- eventReactive(input$long, {
+      GetNearbyMeshBlockIDs(
+        as.numeric(input$lat), as.numeric(input$long), 100)
+    })
+    
+    choropleths <- eventReactive(input$dosomething, {
+      meshBlockIDList <- GetNearbyMeshBlockIDs(as.numeric(input$lat), as.numeric(input$long), 100)
+      
+      all_shape_files = c()
+    
+      for (meshBlockID in meshBlockIDList) {
+        shape <- getShapeFile(meshBlockID = strtoi(meshBlockID))
+        # spatialPolygon <- readOGR(s, "OGRGeoJSON", verbose=T, disambiguateFIDs = TRUE)
+        shape_sp <- readWKT(shape, id=NULL, p4s=NULL)
+        
+        all_shape_files <- c(all_shape_files,
+                             shape_sp)
+      }
+      #print(all_shape_files)
+      all_shape_files
+      print(shape_sp)
+      shape_sp
+      
+    })
     
     output$mymap <- renderLeaflet({
       leaflet() %>%
@@ -24,7 +49,10 @@ shinyServer(
                                                        app_id = "QJT4ednyb3ber0m5g75d",
                                                        app_code = "QplsyvIKvVKCdN3bF8MqPQ")
         ) %>%
-        setView(lng = input$long, lat = input$lat, zoom = 12)
+        setView(lng = input$long, lat = input$lat, zoom = 12) #%>%
+        #addMarkers(data = points())
+        #choropleths() %>% addPolygons()
+      #%>% addPolygons()
     })
   }
 )
